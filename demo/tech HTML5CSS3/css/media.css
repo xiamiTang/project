@@ -1,0 +1,25 @@
+@charset "utf-8";
+/* CSS Document */
+
+@media screen and (max-width:980px){
+	.wrap{ width:96%;}
+	section article{width:61%;}
+	section aside{width:24%;}
+	
+}
+@media screen and (max-width:640px){
+	nav form{ position:absolute;top:80px; right:20px;}
+	nav form input{width:100px;}
+	nav form input:focus{ width:170px;}
+	section article{width:auto; float: none; margin-bottom:20px;}
+	section aside{width:auto; float: none;}
+	
+}
+@media screen and (max-width:480px){
+	
+	nav .m{ display:block;}
+	nav ul{ display:none;}
+	
+	
+	
+}

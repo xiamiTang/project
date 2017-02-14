@@ -1,0 +1,29 @@
+<ion-view>
+    <ion-header-bar class="bar-calm">
+        <p class="title">社区</p>
+
+<!--<ion-tabs>-->
+    <!--<ion-tab title="养猫必看"></ion-tab>-->
+    <!--<ion-tab title="社区论坛"></ion-tab>-->
+<!--</ion-tabs>-->
+        <button class=" button button-icon button-icon-right" ng-click="top()"><i
+                class="ion-arrow-up-a"></i>TOP</button>
+    </ion-header-bar>
+    <ion-content>
+        <div class="list">
+            <ion-refresher pulling-text="下拉刷新" pulling-icon="refreshing-icon" on-pulling="ionRefresher()"></ion-refresher>
+            <a class="item item-thumbnail-right" ng-repeat="item in products">
+                <img ng-src="{{item.imgsrc}}">
+                <h2>{{item.title}}</h2>
+                <p>{{item.icon}}</p>
+                <div class="row">
+                    <div class="col col-30"><span>{{date|date:"yyyy年MM月dd日"}}</span></div>
+                    <div class="col col-30"><span>{{item.name}}</span> </div>
+                    <div class="col col-20"><i class="ion-eye">{{item.numa}}</i></div>
+                    <div class="col col-20"><i class="ion-chatbox-working">{{item.numb}}</i></div>
+                </div>
+            </a>
+        </div>
+        <ion-infinite-scroll on-infinite="loadMore()" immediate-check="false"></ion-infinite-scroll>
+    </ion-content>
+</ion-view>

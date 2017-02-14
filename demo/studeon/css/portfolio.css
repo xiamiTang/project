@@ -1,0 +1,14 @@
+@charset "utf-8";
+/* CSS Document */
+
+.main{width:1140px;height:797px; margin:0 auto; text-align:center;}
+.main h3{ font-size:30px; line-height:50px; height:50px; padding-top:80px; font-family:arial;}
+.main ul{display:inline-block;}
+.main ul li{ float:left; line-height:65px; height:65px;margin:0 18px;}
+.main ul a{ font-size:15px; font-family:arial; color:#252122;}
+.main ul .all{color:#e7280c;}
+.main ul a:hover{color:#e7280c;}
+.main_pic .pic1{ float:left; width:285px; height:182px; position:relative;}
+.main_pic .pic1 img{ width:285px; height:182px;}
+.main_pic .pic1 a{ width:285px; height:182px; background:rgba(0,0,0,0.5); display:block; line-height:182px; position:absolute;left:0;top:0; display:none; color:#fff;}
+.main_pic .pic1:hover a{width:285px; height:182px; background:rgba(0,0,0,0.5); display:block; line-height:182px; position:absolute;left:0;top:0;}

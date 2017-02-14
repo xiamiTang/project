@@ -1,0 +1,17 @@
+<ion-view>
+    <ion-header-bar class="bar-positive">
+        <p class="title">晒萌猫</p>
+        <button class="button button-icon"><i class="icon ion-camera"></i></button>
+    </ion-header-bar>
+    <ion-content>
+        <div class="list card" >
+            <ion-refresher pulling-text="下拉刷新" pulling-icon="refreshing-icon" on-pulling="ionRefresher()"></ion-refresher>
+            <div class="item item-image" ng-repeat="item in products">
+                <img ng-src="{{item.imgsrc}}">
+                <h2>{{item.name}}</h2>
+                <p>{{item.title}}</p>
+            </div>
+        </div>
+        <ion-infinite-scroll on-infinite="loadMore()" immediate-check="false"></ion-infinite-scroll>
+    </ion-content>
+</ion-view>

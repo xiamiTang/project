@@ -1,0 +1,10 @@
+@charset "utf-8";
+/* CSS Document */
+.main{width:1140px; height:720px; margin:0 auto;}
+.main h3{height:96px; font-size:30px; font-family:arial; color:#000; line-height:96px; padding-top:57px;text-align:center;}
+.main p{color:#a3a3a3; font-size:13px; font-family:arial; height:69px; line-height:23px;text-align:center;}
+.main .text{width:350px; height:47px; background-color:#ededed; font-size:15px; color:#acacac; border:1px solid #dcdbe0;padding-left:17px;border-radius:3px;margin:31px 3px 0 13px;font-family:arial;}
+.main .email{width:350px; height:47px; background-color:#ededed; font-size:15px; color:#acacac; border:1px solid #dcdbe0;padding-left:17px;border-radius:3px; font-family:arial;}
+.main .sj{width:350px; height:47px; background-color:#ededed; font-size:15px; color:#acacac; border:1px solid #dcdbe0;padding-left:17px;border-radius:3px; margin-left:3px;}
+.main .message{width:1098px; height:248px; color:#acacac; border:1px solid #dcdbe0;font-size:15px;padding:17px 0 0 17px; background-color:#ededed; border-radius:3px;margin:24px 0 0 13px;font-family:arial;}
+.main .sub{width:225px; height:57px; background-color:#ed5844;border-radius:3px; box-shadow:0px 0px 6px rgba(0,0,0,0.5) inset;color:#fff;margin:45px 457px 0;font-family:arial; font-weight:bold;}

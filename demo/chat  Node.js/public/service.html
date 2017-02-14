@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="js/jquery-3.1.0.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        img{width: 30px; height: 30px}
+        .kehu{float: left;clear:both;}
+        .kefu{float: right;clear:both; margin-top: 5px;}
+        .kehu span{ padding:5px 10px; background: palevioletred; color:#fff; border-radius: 5px;margin-left: 10px;}
+        .kefu span{ padding:5px 10px; background: teal; color:#fff; border-radius: 5px; margin-right: 10px;}
+        .panel-heading>span{ color: red; margin-left: 10px; font-size: 20px;}
+    </style>
+    <script>
+        $(function () {
+            // 和socket服务器建立连接，获得客户端的socket对象
+            // 连接服务器。这将从被加载的页面向服务器发送连接请求，
+            // 最终在服务器端socketio中触发connection事件
+            var clientSocket = io();
+
+            var currentCid = null;      // 当前正在发送信息的客户
+
+            // 客户端socket监听服务器发过来的消息
+            clientSocket.on("message", function (data) {
+                var type = data.type;   // 提交消息类型
+                var cid = data.cid;     // 获取cid
+                currentCid = cid;       // 设为当前用户
+
+                // 根据消息类型，作出相应的处理
+                switch (type) {
+                    case "enter":     // 有新用户连接
+                        // cid显示在列表中
+                        $("#customerList").append('<div class="bg-info customer" data-cid="' + cid + '">  <img src="images/004.jpg">客户:' + cid + '</div>');
+                        break;
+                    case "leave":     // 有用户离开
+                        // 获取cid，从列表中删除
+                        $("#customerList").find("div").each(function () {
+                            if ($(this).attr("data-cid") == cid) {
+                                $(this).remove();       // 删除客户
+                            }
+                        });
+                        break;
+                    case "咨询":     // 有用户咨询消息
+                        // 获取内容，显示在咨询窗口 - 最好是高亮该用户id
+                        var msg = "<div class='kehu'><img src='images/004.jpg'>  [" + cid + "问]：<span>" + data.msg + "</span></div>";
+
+                        // 将消息显示在咨询窗口
+                        $("#messages").append(msg);
+                        // 窗口自动向下滚动
+                        $("#messages").scrollTop($("#messages").prop("scrollHeight"));
+                        break;
+                }
+            });
+            $("#customerList").on("click", ".customer", function () {
+                $(this).addClass("ac").siblings().removeClass("ac")
+                currentCid = $(this).attr("data-cid")
+                $(".panel-heading>span").html(currentCid)
+            })
+
+            // 客服发送回答信息
+            $("#send").on("click", function () {
+                // 获取客服输入的咨询内容
+                var content = $("#message").val();
+                // ......
+                // 敏感词过滤
+
+                // 构造要发送的信息的数据结构
+                var data = {
+                    type: "客服",
+                    cid: currentCid,
+                    msg: content
+                };
+                clientSocket.send(data);
+
+                // 将咨询内容追加到界面上
+                $('#messages[data-cid=' + currentCid + ']').append("<div>" + content + "</div>");
+                $('#messages').append("<div class='kefu'><span>" + content + "</span>[对" + currentCid + "说: ]  <img src='images/jd.gif'></div>");
+                // 窗口自动向下滚动
+                $("#messages").scrollTop($("#messages").prop("scrollHeight"));
+                $("#message").val(null);    // 清空输入框
+            });
+
+            // 当按下Enter键时，触发send按钮的click事件
+            $('#message').keydown(function (e) {
+                if (e.keyCode == 13) {  // 如果是按下的Enter键
+                    //模拟点击send按钮，触发上面的 Click 事件
+                    $("#send").click();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <a href="/"><img src="images/jd.gif" width="100"/></a>
+</div>
+<div class="bg-info">
+    <div class="container">
+        <nav class="navbar navbar-default <!--navbar-fixed-top-->" role="navigation">
+        </nav>
+    </div>
+</div>
+<div class="container">
+    <h3 class="title text-center">京东在线客服系统 - 客服界面</h3>
+    <div class="panel panel-info">
+        <div class="panel-heading">正在和客户通话:<span></span></div>
+        <div class="panel-body">
+            <div class="row">
+                <!--在侧咨询客户列表-->
+                <div class="col-md-3">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">在线客户列表</div>
+                        <div class="panel-body" id="customerList">
+                            <!--<div class="bg-primary customer">客户：张三</div>
+                            <div class="bg-info customer">客户：李四</div>
+                            <div class="bg-info customer">客户：王老五</div>-->
+                        </div>
+                    </div>
+                </div>
+                <!--右侧聊天界面-->
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="messages"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-11"><input type="text" id="message" class="form-control"/></div>
+                        <div class="col-md-1">
+                            <button class="btn btn-info" id="send">发送</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

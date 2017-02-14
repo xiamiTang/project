@@ -1,0 +1,52 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+@media screen and (max-width:960px){
+		header .icon a:nth-child(1){display:block;}
+		header nav ul{ display:none;}
+		.s1 .pic{width:auto;}
+		.s1 .pic img{width:100%;}
+	
+	
+}	
+
+
+@media only screen and (min-width: 320px) and (max-width: 959px) {
+		.s1 ul li{float:none; width:auto;}
+ 		.s4 .pic{ width:auto;}
+		.s4 .pic img{ width:18%; height:auto;}
+		.s2 .inner{width:auto;}
+		.s2 .inner .left{ width:32%;}
+		.s2 .inner .left .left1 div{width:auto;}
+		.s2 .inner .left .left1 .text{ width:auto;}
+		.s2 .pic{width:35%;}
+		.s2 .pic img{width:100%;}
+		.s2 .inner .right{ width:32%;}
+		.s2 .inner .right .left1 div{width:auto;}
+		.s2 .inner .right .left1 .text{ width:auto;}
+}
+
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+			.s2 .inner .left{float:none;width:100%;}
+			.s2 .pic{float:none;width:100%;}
+			.s2 .inner .right{float:none;width:100%;}
+		.s2 .inner .left .left1 div{width:auto;}
+		.s2 .inner .left .left1 .text{ width:auto;}
+		s2 .inner .right .left1 div{width:auto;}
+		.s2 .inner .right .left1 .text{ width:auto;}
+		.s2 .pic img{width:auto;}
+		.s8 .inner .box4 .pic img{ float:none; width:26%;}
+		.s8 .inner{ width:auto;}
+		.s8 .inner .box1{ width:25%;} 
+		s8 .inner .box2{ width:25%;} 
+			s8 .inner .box3{ width:25%;} 
+				s8 .inner .box4{ width:22%;} 
+ 
+}
+@media only screen and (min-width: 320px) and (max-width: 479px) {
+
+ 
+
+}
+

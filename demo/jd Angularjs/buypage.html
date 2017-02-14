@@ -1,0 +1,342 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>无标题文档</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <!--<link href="css/index.css" rel="stylesheet" type="text/css">-->
+    <link href="css/buy.css" rel="stylesheet" type="text/css">
+</head>
+<script src="js/jquery-3.1.0.js"></script>
+<!--<script src="js/buy.js"></script>-->
+<script src="js/angular.js"></script>
+<script src="js/angular-route.js"></script>
+<script>
+    var app = angular.module("myApp", ["ngRoute"]);
+    //自定义过滤器
+    app.filter("numberFilter", function () {
+        return function (cart) {
+            angular.forEach(cart, function (product) {
+                if (product.number < 1) {
+                    product.number = 1
+                }
+            });
+            return cart
+        }
+    });
+    // 路由配置
+    app.config(function ($routeProvider) {
+        $routeProvider
+        //                 .when("/", {templateUrl: "buypage.html",controller: "myCtrl"})
+                .when("/buy", {templateUrl: "pages/buy.html", controller: "buyCtrl"})
+                //                .when("/buy/:id", {templateUrl: "pages/buy.html", controller: "buy1Ctrl"})
+                .when("/buy1", {templateUrl: "pages/buy1.html", controller: "buy1Ctrl"})
+                .when("/buy2", {templateUrl: "pages/buy2.html", controller: "buy2Ctrl"})
+                .when("/cart", {templateUrl: "pages/cart.html", controller: "cartCtrl"})
+
+
+    });
+    app.controller("myCtrl", function ($scope, cartService) {
+        $scope.aa = 1;
+//        $scope.bb = 0;
+//        $scope.getNum = function () {
+//            var total = 0
+//            angular.forEach("cartService.findAll()", function (c) {
+//                total += c.number;
+//            });
+//            return total;
+//        }
+
+//        $scope.add= function () {
+//            $scope.bb += $scope.aa
+//        };
+        $scope.add1 = function () {
+            $scope.aa++
+        };
+        $scope.add2 = function () {
+            $scope.aa--
+            if ($scope.aa <= 1) {
+                $scope.aa = 1
+            }
+        }
+    });
+    // 控制器配置
+    app
+            .controller("buyCtrl", function ($scope, $http, cartService, $routeParams) {
+                var url = "products1.json";
+                $scope.products = ""
+                $http.get(url).success(function (data) {
+//                    console.log(data)
+                    $scope.products = data;
+                });
+                $scope.add = function (product) {
+                    // 将商品对象加入到购物车中
+                    cartService.add(product, $scope.aa);
+                    console.log($scope.aa)
+                    console.log($scope.products)
+                };
+
+            })
+            .controller("buy1Ctrl", function ($scope, $http, cartService) {
+                var url = "products.json";
+                $scope.products = ""
+                $http.get(url).success(function (data) {
+                    $scope.products = data;
+                });
+                $scope.add = function (product) {
+                    // 将商品对象加入到购物车中
+                    cartService.add(product, $scope.aa);
+                };
+            })
+            .controller("buy2Ctrl", function ($scope, $http, cartService) {
+                var url = "products2.json";
+                $scope.products = ""
+                $http.get(url).success(function (data) {
+                    $scope.products = data;
+                });
+                $scope.add = function (product) {
+                    // 将商品对象加入到购物车中
+                    cartService.add(product, $scope.aa);
+                };
+            })
+            .controller("cartCtrl", function ($scope, $http, cartService) {
+                // 拿到购物筐中的所有商品
+                $scope.cart = cartService.findAll();
+
+                // 删除购物车中商品的方法
+                $scope.remove = function (name) {
+                    cartService.remove(name);
+                };
+                // 统计购买总数量
+                $scope.count = function () {
+                    var total = 0;
+                    angular.forEach($scope.cart, function (item) {
+                        total += item.number;
+                    });
+                    return total;
+                };
+
+                // 计算购买总金额
+                $scope.money = function () {
+                    var total = 0;
+                    angular.forEach($scope.cart, function (item) {
+                        total += item.number * item.product.price;
+                    });
+                    return total;
+                };
+            });
+    // 主控制器配置
+
+    // 创建一个代表购物车的service
+    app.factory("cartService", function () {
+        // 容器：相当于购物车的购物筐
+        var cart = [];
+        var shopCart = {
+            // 添加商品到购物车:商品对象{name:"方便面",price:8.00}
+            // 需要判断购物车的数组中，之前是否已经加入过该商品
+            // 如果之前已经加入过，则只需要修改购买数量
+            add: function (product, number) {
+
+                // 遍历数组，判断数组中是否有product
+                // item:{product:product,number:3}
+                for (var i = 0; i < cart.length; i++) {
+                    var item = cart[i];
+                    if (product.name == item.product.name) {
+                        // 说明之前添加过，这里只修改购买数量
+                        item.number += number;
+                        return;
+                    }
+                }
+                // 如果能执行到这里，说明在购物车中没有找到该商品-新商品
+                cart.push({product: product, number: number});
+            },
+            // 从购物车中删除商品的方法
+            remove: function (name) {
+                // 遍历数组，判断数组中是否有product
+                // item:{product:product,number:3}
+                for (var i = 0; i < cart.length; i++) {
+                    var item = cart[i];
+                    if (name == item.product.name) {
+                        // 说明找到了要删除的商品，从数组中删除它
+                        cart.splice(i, 1);
+                        return;
+                    }
+                }
+            },
+            // 查询购物车中所有商品的方法
+            findAll: function () {
+                return cart;
+            },
+            // 清空购物车
+            clear: function () {
+                cart.length = 0;
+            }
+        };
+        return shopCart;
+    });
+</script>
+<body ng-app="myApp" ng-controller="myCtrl">
+<div class="header">
+    <div class="h_top clearfix">
+        <div class="inner">
+            <div class="add">送至：北京</div>
+            <ul>
+                <li><a href="#" class="first">你好，请登录</a><a href="#" class="last">免费注册</a></li>
+                <li>
+                    <div class="line"></div>
+                </li>
+                <li><a href="#">我的订单</a></li>
+                <li>
+                    <div class="line"></div>
+                </li>
+                <li class="bg"><a href="#">我的京东<i>◇</i></a></li>
+                <li>
+                    <div class="line"></div>
+                </li>
+                <li><a href="#">京东会员</a></li>
+                <li>
+                    <div class="line"></div>
+                </li>
+                <li><a href="#">企业采购</a></li>
+                <li>
+                    <div class="line"></div>
+                </li>
+                <li class="bg"><a href="#"><span></span>手机京东<i>◇</i></a></li>
+                <li>
+                    <div class="line"></div>
+                </li>
+                <li class="bg"><a href="#">关注京东<i>◇</i></a></li>
+                <li>
+                    <div class="line"></div>
+                </li>
+                <li class="bg"><a href="#">客户服务<i>◇</i></a></li>
+                <li>
+                    <div class="line"></div>
+                </li>
+                <li class="bg"><a href="#">网站导航<i>◇</i></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="h_mid clearfix">
+        <div class="logo"><a href="#/"><img src="images/logo-201305.png"/></a></div>
+        <div class="search" action="dosceach" method="get">
+            <form>
+                <input type="text" name="keyword" value="卡通手机壳" class="text"/><input type="submit" value="搜索"
+                                                                                     class="sub"/>
+            </form>
+            <div class="p">
+                <a href="#" class="q">七夕礼品</a>
+                <a href="#">消暑神器</a>
+                <a href="#">农用物资</a>
+                <a href="#">鲜花99元</a>
+                <a href="#">电影京卷</a>
+                <a href="#">防晒喷雾</a>
+                <a href="#">永生花</a>
+                <a href="#">小米电脑</a>
+                <a href="#">thinkpad</a>
+            </div>
+        </div>
+        <div class="buy" ng-controller="cartCtrl">
+            <a href="#/cart">我的购物车</a>
+            <i>></i>
+            <div class="number">{{count()}}</div>
+        </div>
+    </div>
+    <div class="h_bot clearfix">
+        <div class="nav">全部商品分类</div>
+        <ul>
+            <li><a href="#">服装城</a></li>
+            <li><a href="#">美妆馆</a></li>
+            <li><a href="#">京东超市</a></li>
+            <li><a href="#">生鲜</a></li>
+            <li><a href="#">全球购</a></li>
+            <li><a href="#">闪购</a></li>
+            <li><a href="#">团购</a></li>
+            <li><a href="#">拍卖</a></li>
+            <li><a href="#">金融</a></li>
+        </ul>
+    </div>
+</div>
+<div class="main">
+    <div class="s2">
+        <br>
+        <p class="well"> 产品详细: 点击图片购买</p>
+        <div class="con clearfix">
+            <i></i>
+            <div class="con_1">
+                <div class="pic"><a href="#/buy?id=well"><img src="images/5811d796N3f7c814e.jpg"/></a></div>
+                <div class="text1">
+                    <h6>小米电脑</h6>
+                    <p>310 经典版 14英寸超薄</p>
+                    <span>¥3399.00</span>
+                </div>
+            </div>
+            <div class="con_1">
+                <div class="pic"><a href="#/buy1"><img src="images/TB1_50x50.jpg"/></a></div>
+                <div class="text1">
+                    <h6>波司登羽绒服</h6>
+                    <p>2017冬季新款</p>
+                    <span>¥999.00</span>
+                </div>
+            </div>
+            <div class="con_1">
+                <div class="pic"><a href="#/buy2"><img src="images/xiaowu2.jpg"/></a></div>
+                <div class="text1">
+                    <h6>联想 （Lenovo) 小新</h6>
+                    <p>310 经典版 14英寸超薄</p>
+                    <span>¥4999.00</span>
+                </div>
+            </div>
+            <!--<div class="con_1">-->
+            <!--<div class="pic"><a href="#"><img src="images/2.jpg"/></a></div>-->
+            <!--<div class="text1">-->
+            <!--<h6>联想 （Lenovo) 小新</h6>-->
+            <!--<p>310 经典版 14英寸超薄</p>-->
+            <!--<span>¥4399.00</span>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="con_1">-->
+            <!--<div class="pic"><a href="#"><img src="images/vvvvv_04.jpg"/></a></div>-->
+            <!--<div class="text1">-->
+            <!--<h6>联想 （Lenovo) 小新</h6>-->
+            <!--<p>310 经典版 14英寸超薄</p>-->
+            <!--<span>¥4399.00</span>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="con_1">-->
+            <!--<div class="pic"><a href="#"><img src="images/5.jpg"/></a></div>-->
+            <!--<div class="text1 tt">-->
+            <!--<h6>联想 （Lenovo) 小新</h6>-->
+            <!--<p>310 经典版 14英寸超薄</p>-->
+            <!--<span>¥4399.00</span>-->
+            <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<div id="main" class="container">
+    <div ng-view></div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</body>
+</html>
